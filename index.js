@@ -4,12 +4,14 @@ const bodyParser = require('body-parser');
 const morgan = require('morgan');
 const userRoutes = require('./routes/users');
 const companyRoutes = require('./routes/companies');
+const jobsRoutes = require('./routes/jobs');
 
 //body parser needs to be used before teamRoutes
 app.use(bodyParser.json());
 app.use(morgan('dev'));
 app.use('/users', userRoutes);
 app.use('/companies', companyRoutes);
+app.use('/jobs', jobsRoutes);
 
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
