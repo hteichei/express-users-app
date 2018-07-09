@@ -27,12 +27,15 @@ router.post('', async function(req, res, next) {
 router.get('/:id', async function(req, res, next) {
   try {
     const companyData = await db.query('SELECT * FROM companies');
-    const employees = await db.query(
+    const users = await db.query(
       'SELECT * FROM users WHERE current_company_id=$1',
       [req.params.id]
     );
-    const userIds = employees.rows.map(val => val.id);
-    companyData.rows[0].users = userIds;
+    const jobs = await db.query('SELECT * FROM jobs WHERE company_id=$1', [
+      req.params.id
+    ]);
+    companyData.rows[0].users = users.rows;
+    companyData.rows[0].jobs = jobs.rows;
     return res.json(companyData.rows[0]);
   } catch (err) {
     return next(err);

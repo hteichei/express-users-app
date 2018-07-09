@@ -29,19 +29,6 @@ router.get('/:id', async function(req, res, next) {
     const job = await db.query('SELECT * FROM JOBS WHERE id=$1', [
       req.params.id
     ]);
-    const userNames = await db.query(
-      `SELECT user.first_name FROM users
-        JOIN jobs_users
-        ON users.id=jobs_users.user_id
-        JOIN jobs
-        ON jobs.id=jobs_users.job_id
-      WHERE job_id=$1
-    `,
-      [req.params.id]
-    );
-    console.log(userNames);
-    const users = userNames.rows.map(val => val.first_name);
-    job.rows[0] = users;
     return res.json(job.rows[0]);
   } catch (err) {
     return next(err);
@@ -51,8 +38,14 @@ router.get('/:id', async function(req, res, next) {
 router.patch('/:id', async function(req, res, next) {
   try {
     const job = await db.query(
-      'UPDATE jobs SET title=$1, salary=$2, equity=$3, company_id=$4 RETURNING *',
-      [req.body.title, req.body.salary, req.body.equity, req.body.company_id]
+      'UPDATE jobs SET title=$1, salary=$2, equity=$3, company_id=$4 WHERE id=$5 RETURNING *',
+      [
+        req.body.title,
+        req.body.salary,
+        req.body.equity,
+        req.body.company_id,
+        req.params.id
+      ]
     );
     return res.json(job.rows[0]);
   } catch (err) {
