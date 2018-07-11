@@ -2,6 +2,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 const morgan = require('morgan');
+const bcrypt = require('bcrypt');
 const userRoutes = require('./routes/users');
 const companyRoutes = require('./routes/companies');
 const jobsRoutes = require('./routes/jobs');
@@ -20,8 +21,8 @@ app.use((req, res, next) => {
   return next(err); // pass the error to the next piece of middleware
 });
 
-/* 
-  error handler - for a handler with four parameters, 
+/*
+  error handler - for a handler with four parameters,
   the first is assumed to be an error passed by another
   handler's "next"
  */
